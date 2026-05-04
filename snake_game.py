@@ -10,6 +10,7 @@ def loser(mid, snake):
    score = get_score(snake)
    print("Snake hit!")
    print(f"snake[0] = {snake[0]}, snake[1:] = {snake[1:]} ")
+   window.timeout(100000)
    curses.beep()
    window.clear()
    window.refresh()
