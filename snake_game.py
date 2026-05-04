@@ -1,25 +1,23 @@
 #import libraries
 import sys
-print(sys.version)
 import curses as curses
 import random
 import time
 
 #If snake loses
 def loser(mid, snake):
-   score = get_score(snake)
-   print("Snake hit!")
-   print(f"snake[0] = {snake[0]}, snake[1:] = {snake[1:]} ")
-   window.timeout(100000)
-   curses.beep()
-   window.clear()
-   window.refresh()
-   window.addstr(mid[0], mid[1], score)
-   window.refresh()
-   window.getch()
-   curses.endwin()
-   quit()
-   #Add more features
+    score = get_score(snake)
+
+    window.clear()
+    window.timeout(-1)
+
+    window.addstr(mid[0], mid[1], score)
+
+    window.getch()
+
+    curses.endwin()
+    quit()
+    #Add more features
 
 #init curses and screen
 screen = curses.initscr()
@@ -27,11 +25,11 @@ screen = curses.initscr()
 #getmaxyx
 scr_y, scr_x = screen.getmaxyx()
 
+#initialize window
+window = curses.newwin(scr_y, scr_x, 0, 0)
+
 #hide the mouse cursur
 curses.curs_set(0)
-
-#init window
-window = curses.newwin(scr_y, scr_x, 0, 0)
 
 #allow input
 window.keypad(1)
@@ -57,9 +55,9 @@ def get_score(snake):
 
 #Return snake direction
 def snk_dirc(snk1, snk2):
-   dirc = "H"
+   dirc = "Horizontal"
    if snk1[0] != snk2[0]:
-      dirc = "V"
+      dirc = "Vertical"
    
    return dirc
 
@@ -73,14 +71,9 @@ food = [mid[0], mid[1]]
 #add food to screen
 window.addch(food[0], food[1], curses.ACS_STERLING)
 
-#Set the keys
-KEY_RIGHT = 454
-KEY_LEFT = 452
-KEY_UP = 450
-KEY_DOWN = 456
 
 #set initial key to right
-key = KEY_RIGHT
+key = curses.KEY_RIGHT
 
 #start the game loop
 while True:
@@ -88,7 +81,11 @@ while True:
    next_key = window.getch()
    
    #if no key is entered or snake moves in the same direction key stays right
-   if next_key == -1 or snk_dirc(snake[0], snake[1]) == "V" and next_key in [KEY_UP, KEY_DOWN] or snk_dirc(snake[0], snake[1]) == "H" and next_key in [KEY_RIGHT, KEY_LEFT]:
+   if (
+       next_key == -1 
+       or snk_dirc(snake[0], snake[1]) == "Vertical" and next_key in [curses.KEY_UP, curses.KEY_DOWN]
+       or snk_dirc(snake[0], snake[1]) == "Horizontal" and next_key in [curses.KEY_RIGHT, curses.KEY_LEFT]
+   ):
       pass
    else:
       key = next_key
@@ -99,19 +96,19 @@ while True:
    else:
       #make new head based on direction and insert it into snake
       new_head = [snake[0][0], snake[0][1]]
-      if key == 454:
+      if key in [curses.KEY_RIGHT]:
          new_head[1] += 1
-      elif key == 452:
+      elif key in [curses.KEY_LEFT]:
          new_head[1] -= 1
-      elif key == 450:
+      elif key in [curses.KEY_UP]:
          new_head[0] -= 1
-      elif key == 456:
+      elif key in [curses.KEY_DOWN]:
          new_head[0] += 1
       else:
          new_head[1] += 1
 
       snake.insert(0, new_head)
-      
+ 
    #check if snake ate food if so make it respawn somewhere else
    if food == snake[0]:
       food = None
@@ -124,15 +121,10 @@ while True:
 
       window.addch(food[0], food[1], curses.ACS_STERLING)
 
-   #else remove tail 
+   #else remove tail
    else:
       tail = snake.pop()
       window.addch(tail[0], tail[1], ' ')
     
    #make snake
    window.addch(snake[0][0], snake[0][1], curses.ACS_DIAMOND)
-
-   print("_______________________________________")
-
-   print(curses.__name__)
-
