@@ -64,23 +64,29 @@ while True:
           player.direction = "left"
 
    #make new head based on direction and insert it into snake
-   player_hit_food = player.move(mid, window, food)
+   player.addHead(mid)
  
    #check if snake ate food if so make it respawn somewhere else
-   if player_hit_food:
+   if player.collides_with(food):
       food = None
       while food is None:
          new_food = (
             random.randint(2,scr_y - 2),
             random.randint(2,scr_x - 2)
             )
-         food = new_food if new_food not in player.setBody else None
+         food = new_food if not player.collides_with(food) else None
       window.addch(food[0], food[1], curses.ACS_STERLING)
-
+   else:
+        tail = player.popTail()
+        window.addch(tail[0], tail[1], " ")
    
    if (
         player.head[0] in [1, scr_y-1] or
-        player.head[1] in [1, scr_x-1]
+        player.head[1] in [1, scr_x-1] or
+        player.head in player.headless_body
    ):
       player.loser(mid, window)
       quit()
+    
+   window.addch(player.head[0], player.head[1], player.skin)
+

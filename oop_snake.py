@@ -9,7 +9,7 @@ class snake:
             (coordinates[0], coordinates[1])
         ]
         
-        self.setBody = set(initBody)
+        self.headless_body = set(initBody[0:2])
 
         self.queueBody = deque(initBody)
 
@@ -30,9 +30,14 @@ class snake:
 
         return LOM
 
-    def move(self, mid, window, foodPos, steps = 1):
+    def collides_with(self, object):
+        if (object == self.head or object in self.headless_body):
+            return True
+        else:
+            return False
+
+    def addHead(self, foodPos, steps = 1):
         snake_head = self.head
-        player_hit_food = False
 
         if self.direction == "right":
             self.queueBody.append((snake_head[0], snake_head[1]+steps))
@@ -42,25 +47,21 @@ class snake:
             self.queueBody.append((snake_head[0]-steps, snake_head[1]))
         elif self.direction  == "down":
             self.queueBody.append((snake_head[0]+steps, snake_head[1]))
-        
-        if self.queueBody[-1] in self.setBody:
-            self.loser(mid, window)
 
         self.head = self.queueBody[-1]
-        self.setBody.add(self.head)
-        window.addch(self.head[0], self.head[1], self.skin)
+        if self.head in self.headless_body:
+            return 
 
-        if foodPos != self.head:
-            window.addch(self.tail[0], self.tail[1], ' ')
-            tail = self.queueBody.popleft()
-            self.setBody.remove(tail)
-            self.tail = self.queueBody[0]
-        else:
-            self.size += 1
-            player_hit_food = True
+        self.headless_body.add(self.queueBody[-2])
 
-        return player_hit_food
-    
+        self.size += 1
+
+    def popTail(self):
+        tail = self.queueBody.popleft()
+        self.headless_body.remove(tail)
+        self.tail = self.queueBody[0]
+        return tail
+
     def get_score(self):
         return str(len(self.queueBody))
 
@@ -74,4 +75,3 @@ class snake:
 
         window.getch()
 
-        quit()
