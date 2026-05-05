@@ -83,7 +83,7 @@ while True:
    if (
         player.head[0] in [1, scr_y-1] or
         player.head[1] in [1, scr_x-1] or
-        player.head in player.headless_body
+        player.head in player.snakeBody[:-1]
    ):
       player.loser(mid, window)
       quit()
