@@ -3,6 +3,7 @@ import sys
 import curses as curses
 import random
 import time
+import oop_snake
 
 #If snake loses
 def loser(mid, snake):
