@@ -1,23 +1,10 @@
 #import libraries
 import sys
+# from collections import deque
 import curses as curses
 import random
 import time
-
-#If snake loses
-def loser(mid, snake):
-    score = get_score(snake)
-
-    window.clear()
-    window.timeout(-1)
-
-    window.addstr(mid[0], mid[1], score)
-
-    window.getch()
-
-    curses.endwin()
-    quit()
-    #Add more features
+from oop_snake import snake
 
 #init curses and screen
 screen = curses.initscr()
@@ -37,40 +24,17 @@ window.keypad(1)
 #set delay time
 window.timeout(125)
 
-#make variables representing snake head coordinates
-snk_y = scr_y // 2
-snk_x = scr_x // 4
-
-#make list representing snake body coordinates
-snake = [
-   [snk_y, snk_x],
-   [snk_y, snk_x - 1],
-   [snk_y, snk_x - 2]
-]
-
-def get_score(snake):
-    score = f"Score: {len(snake)}"
-
-    return score
-
-#Return snake direction
-def snk_dirc(snk1, snk2):
-   dirc = "Horizontal"
-   if snk1[0] != snk2[0]:
-      dirc = "Vertical"
-   
-   return dirc
-
-
 #make list representing the middle of screen
 mid = [scr_y // 2, scr_x // 2]
 
 #initailize food coordinates list
-food = [mid[0], mid[1]]
+food = (mid[0], mid[1])
 
 #add food to screen
 window.addch(food[0], food[1], curses.ACS_STERLING)
 
+#make the snake object
+player = snake([scr_y // 2, scr_x // 4])
 
 #set initial key to right
 key = curses.KEY_RIGHT
@@ -82,49 +46,47 @@ while True:
    
    #if no key is entered or snake moves in the same direction key stays right
    if (
-       next_key == -1 
-       or snk_dirc(snake[0], snake[1]) == "Vertical" and next_key in [curses.KEY_UP, curses.KEY_DOWN]
-       or snk_dirc(snake[0], snake[1]) == "Horizontal" and next_key in [curses.KEY_RIGHT, curses.KEY_LEFT]
+       next_key == -1
+       or player.line_of_motion() == "Vertical" and next_key in [curses.KEY_UP, curses.KEY_DOWN]
+       or player.line_of_motion() == "Horizontal" and next_key in [curses.KEY_RIGHT, curses.KEY_LEFT]
    ):
       pass
    else:
       key = next_key
+      
+      if key == curses.KEY_UP:
+          player.direction = "up"
+      elif key == curses.KEY_DOWN:
+          player.direction = "down"
+      elif key == curses.KEY_RIGHT:
+          player.direction = "right"
+      elif key == curses.KEY_LEFT:
+          player.direction = "left"
 
-   #check if snake hit itself or walls
-   if snake[0][0] in [1, scr_y-1] or snake[0][1] in [1, scr_x-1] or snake[0] in snake[1:]:
-      loser(mid, snake)
-   else:
-      #make new head based on direction and insert it into snake
-      new_head = [snake[0][0], snake[0][1]]
-      if key in [curses.KEY_RIGHT]:
-         new_head[1] += 1
-      elif key in [curses.KEY_LEFT]:
-         new_head[1] -= 1
-      elif key in [curses.KEY_UP]:
-         new_head[0] -= 1
-      elif key in [curses.KEY_DOWN]:
-         new_head[0] += 1
-      else:
-         new_head[1] += 1
-
-      snake.insert(0, new_head)
+   #make new head based on direction and insert it into snake
+   player.addHead(mid)
  
    #check if snake ate food if so make it respawn somewhere else
-   if food == snake[0]:
+   if player.collides_with(food):
       food = None
       while food is None:
-         new_food = [
-            random.randint(2,scr_y - 2), 
+         new_food = (
+            random.randint(2,scr_y - 2),
             random.randint(2,scr_x - 2)
-            ]
-         food = new_food if new_food not in snake else None
-
+            )
+         food = new_food if not player.collides_with(food) else None
       window.addch(food[0], food[1], curses.ACS_STERLING)
-
-   #else remove tail
    else:
-      tail = snake.pop()
-      window.addch(tail[0], tail[1], ' ')
+        tail = player.popTail()
+        window.addch(tail[0], tail[1], " ")
+   
+   if (
+        player.head[0] in [1, scr_y-1] or
+        player.head[1] in [1, scr_x-1] or
+        player.head in player.snakeBody[:-1]
+   ):
+      player.loser(mid, window)
+      quit()
     
-   #make snake
-   window.addch(snake[0][0], snake[0][1], curses.ACS_DIAMOND)
+   window.addch(player.head[0], player.head[1], player.skin)
+
