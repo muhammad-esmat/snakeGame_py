@@ -82,7 +82,7 @@ while True:
    
    #if no key is entered or snake moves in the same direction key stays right
    if (
-       next_key == -1 
+       next_key == -1
        or snk_dirc(snake[0], snake[1]) == "Vertical" and next_key in [curses.KEY_UP, curses.KEY_DOWN]
        or snk_dirc(snake[0], snake[1]) == "Horizontal" and next_key in [curses.KEY_RIGHT, curses.KEY_LEFT]
    ):
