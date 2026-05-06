@@ -1,7 +1,7 @@
-import curses
+import curses as curses
 
 class snake:
-    def __init__(self, coordinates, direction = "right"):
+    def __init__(self, coordinates, skin, direction = "right"):
         initBody = [
             (coordinates[0], coordinates[1]-2),
             (coordinates[0], coordinates[1]-1),
@@ -12,11 +12,10 @@ class snake:
 
         self.direction = direction
 
-        self.skin = curses.ACS_DIAMOND
+        self.skin = skin
 
         self.head = self.snakeBody[-1]
         self.tail = self.snakeBody[0]
-        self.size = 3
 
     
     def line_of_motion(self):
@@ -28,12 +27,12 @@ class snake:
         return LOM
 
     def collides_with(self, object):
-        if (object == self.head or object in self.snakeBody):
+        if object in self.snakeBody:
             return True
         else:
             return False
 
-    def addHead(self, foodPos, steps = 1):
+    def addHead(self, steps = 1):
         snake_head = self.head
 
         if self.direction == "right":
@@ -46,7 +45,6 @@ class snake:
             self.snakeBody.append((snake_head[0]+steps, snake_head[1]))
 
         self.head = self.snakeBody[-1]
-        self.size += 1
 
 
     def popTail(self):

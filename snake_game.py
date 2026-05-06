@@ -19,7 +19,7 @@ curses.curs_set(0)
 window.keypad(1)
 
 #set delay time
-window.timeout(125)
+window.timeout(100)
 
 #make list representing the middle of screen
 mid = [scr_y // 2, scr_x // 2]
@@ -31,7 +31,7 @@ food = (mid[0], mid[1])
 window.addch(food[0], food[1], curses.ACS_STERLING)
 
 #make the snake object
-player = snake([scr_y // 2, scr_x // 4])
+player = snake([scr_y // 2, scr_x // 4], curses.ACS_BOARD)
 
 #set initial key to right
 key = curses.KEY_RIGHT
@@ -61,21 +61,21 @@ while True:
           player.direction = "left"
 
    #make new head based on direction and insert it into snake
-   player.addHead(mid)
+   player.addHead()
  
    #check if snake ate food if so make it respawn somewhere else
-   if player.collides_with(food):
+   if player.head == food:
       food = None
       while food is None:
          new_food = (
             random.randint(2,scr_y - 2),
             random.randint(2,scr_x - 2)
-            )
+         )
          food = new_food if not player.collides_with(food) else None
       window.addch(food[0], food[1], curses.ACS_STERLING)
    else:
         tail = player.popTail()
-        window.addch(tail[0], tail[1], " ")
+        window.addch(tail[0], tail[1], ' ')
    
    if (
         player.head[0] in [1, scr_y-1] or
