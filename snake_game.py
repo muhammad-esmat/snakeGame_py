@@ -1,9 +1,6 @@
 #import libraries
-import sys
-# from collections import deque
 import curses as curses
 import random
-import time
 from oop_snake import snake
 
 #init curses and screen
