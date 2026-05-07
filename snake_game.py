@@ -1,7 +1,7 @@
 #import libraries
 import curses as curses
 import random
-from oop_snake import snake
+from snakes import snake
 
 #init curses and screen
 screen = curses.initscr()
