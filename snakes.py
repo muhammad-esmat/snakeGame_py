@@ -1,6 +1,5 @@
 import curses as curses
 import time
-from ashiart import image_to_ascii
 
 
 class snake:
