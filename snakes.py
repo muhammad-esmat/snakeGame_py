@@ -71,21 +71,21 @@ class snake:
             mid[0] - 3,
             mid[1] - (len(lose_msg1) // 2),
             lose_msg1,
-            curses.A_BOLD | curses.A_REVERSE,
+            curses.A_BOLD,
         )
 
         window.addstr(
             mid[0] - 2,
             mid[1] - (len(lose_msg2) // 2),
             lose_msg2,
-            curses.A_BOLD | curses.A_REVERSE,
+            curses.A_BOLD,
         )
 
         window.addstr(
             mid[0] - 1,
             mid[1] - (len(lose_msg3) // 2),
             lose_msg3,
-            curses.A_BOLD | curses.A_REVERSE,
+            curses.A_BOLD,
         )
 
         window.addstr(
