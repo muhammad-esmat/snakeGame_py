@@ -58,37 +58,49 @@ class snake:
     def loser(self, mid, window, screen):
         scr_y, scr_x = screen.getmaxyx()
 
-        lose_msg1 = "Snake hit!!"
-        lose_msg2 = f"Current score: {self.get_score()}"
-        lose_msg3 = "Press any key to exit ..."
+        lose_msg1 = "╔════════════════════╗"
+        lose_msg2 = "║     GAME OVER!     ║"
+        lose_msg3 = "╚════════════════════╝"
+        score_msg = f"Final Score: {self.get_score()}"
+        exit_msg = "Press any key to exit..."
 
         curses.flushinp()
         window.erase()
 
         window.addstr(
-            mid[0] - 2, abs(mid[1] - (len(lose_msg1) // 2)), lose_msg1, curses.A_BOLD
+            mid[0] - 3,
+            mid[1] - (len(lose_msg1) // 2),
+            lose_msg1,
+            curses.A_BOLD | curses.A_REVERSE,
         )
 
         window.addstr(
-            mid[0] + 2,
+            mid[0] - 2,
             mid[1] - (len(lose_msg2) // 2),
             lose_msg2,
+            curses.A_BOLD | curses.A_REVERSE,
         )
 
-        window.timeout(-1)
-        window.getch()
-        time.sleep(1)
-
-        curses.flushinp()
-        window.erase()
-
         window.addstr(
-            mid[0],
+            mid[0] - 1,
             mid[1] - (len(lose_msg3) // 2),
             lose_msg3,
+            curses.A_BOLD | curses.A_REVERSE,
+        )
+
+        window.addstr(
+            mid[0] + 1,
+            mid[1] - (len(score_msg) // 2),
+            score_msg,
+        )
+
+        window.addstr(
+            mid[0] + 3,
+            mid[1] - (len(exit_msg) // 2),
+            exit_msg,
             curses.A_BLINK,
         )
 
         window.timeout(-1)
         window.getch()
-        time.sleep(2)
+        time.sleep(1.5)
