@@ -46,7 +46,7 @@ A classic Snake game implemented in Python using the `curses` library and object
 
 ```
 snakeGame_py/
-├── snake.py    # Snake class definition (movement, collision, scoring)
+├── snakes.py    # Snake class definition (movement, collision, scoring)
 ├── main.py   # Main game loop, terminal setup, and rendering
 └── README.md       # Project documentation
 ```
